@@ -6,6 +6,9 @@ __pycache__/
 # C extensions
 *.so
 
+# personal files
+network_info.txt
+
 # Distribution / packaging
 .Python
 build/
