@@ -2,7 +2,7 @@ from moglabs_fzw import Wavemeter
 from DLC_Pro_Controller import Laser
 from simple_pid import PID
 
-class Laser_locking:
+class Laser_lock:
     
     _wavemeter = None
     _wavemeter_address = None
