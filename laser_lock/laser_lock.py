@@ -3,7 +3,12 @@ from DLC_Pro_Controller import Laser
 from simple_pid import PID
 
 class Laser_lock:
-    
+    #possible DLC controllers: Barium, Photoionization, Lutetium_848nm_1244nm, Lutetium_646nm
+
+    # laser wavelength in nm        493          650                646                     646                     848
+    _wavemeter_port_reference=[['Barium', 1], ['Barium', 2], ['Lutetium_646nm', 2], ['Lutetium_646nm', 1], ['Lutetium_848nm_1244nm', 2]]# ports 6, 7, 8 are not set up as of yet
+    _wavemeter_channel = 1
+
     _wavemeter = None
     _wavemeter_address = None
     _laser = None
@@ -16,7 +21,13 @@ class Laser_lock:
 
         # sets up connection to the DLC_Pro_Controller and laser
         self._laser = Laser(network_address, laser_controller, laser_number)
-        
+
+        #finds the proper wavemeter port
+        for i in range(len(self._wavemeter_port_reference)):
+            if (self._wavemeter_port_reference[i] == [laser_controller, laser_number]):
+                self.wavemeter_channel = i + 1
+                return
+        raise Exception("Laser not connected to the Wavemeter")
     
     # will lock the lasers to a certain wavelength
     def set_wavelength(self, setpoint_, Kp=0.5, Ki=0.05, Kd=0):
