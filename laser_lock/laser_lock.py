@@ -59,3 +59,7 @@ class Laser_lock:
     #sets the laser votage offset
     def set_voltage_offset(self, offset):
         self._laser.set_voltage_offset(offset)
+
+    #returns wavemeter port
+    def get_wavemeter_port(self):
+        return self._wavemeter_channel
