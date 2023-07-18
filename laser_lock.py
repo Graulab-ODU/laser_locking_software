@@ -1,5 +1,6 @@
 from moglabs_fzw import Wavemeter
 from DLC_Pro_Controller import Laser
+from simple_pid import PID
 
 class Laser_locking:
     
@@ -18,8 +19,18 @@ class Laser_locking:
         
     
     # will lock the lasers to a certain wavelength
-    def set_wavelength(self, setpoint):
+    def set_wavelength(self, setpoint_, Kp=0.5, Ki=0.05, Kd=0):
         pass
+        '''Untested, do not run'''
+        
+        pid = PID(Kp, Ki, Kd, setpoint=setpoint_)
+
+        change = 0
+        while True:    #find a proper way to run and end the loop
+            
+            change = pid(self.get_wavelength() + change)
+
+            #maybe enter a time sleep function
 
 
 
