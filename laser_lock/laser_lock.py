@@ -25,7 +25,7 @@ class Laser_lock:
         #finds the proper wavemeter port
         for i in range(len(self._wavemeter_port_reference)):
             if (self._wavemeter_port_reference[i] == [laser_controller, laser_number]):
-                self.wavemeter_channel = i + 1
+                self._wavemeter_channel = i + 1
                 return
         raise Exception("Laser not connected to the Wavemeter")
     
