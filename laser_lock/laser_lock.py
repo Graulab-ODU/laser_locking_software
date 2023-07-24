@@ -30,7 +30,7 @@ class Laser_lock:
         raise Exception("Laser not connected to the Wavemeter")
     
     # will lock the lasers to a certain wavelength
-    def set_wavelength(self, setpoint_, Kp=0.5, Ki=0.05, Kd=0, max_voltage=100, min_voltage=0, max_voltage_change=20, min_voltage_change=0):
+    def set_wavelength(self, setpoint_, Kp=0.5, Ki=0.05, Kd=0, max_voltage=100, min_voltage=0, max_voltage_change=20):
         pass
         '''Untested, do not run'''
         
@@ -42,11 +42,17 @@ class Laser_lock:
             #finds the change from the PID
             change = pid(self.get_wavelength() + change)
 
+            #makes sure the change in voltage is not beyond the given interval
+            if (max_voltage_change > (change/2) > 0):
+                change = 20 #20/2 = 10
+
+
             #calculates what the new voltage offset will be
             change = self.get_voltage_offset()+(change/2)
 
             #sets up limitations for the PID to make sure it doesnt go beyond or break certain things
-            
+            if (max_voltage > (change/2) > min_voltage):
+                change = 70
 
 
             #alters the voltage according to the change from the pid
