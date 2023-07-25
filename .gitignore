@@ -8,6 +8,7 @@ __pycache__/
 
 # personal files
 network_info.txt
+randomtestthing.py
 
 # Distribution / packaging
 .Python
