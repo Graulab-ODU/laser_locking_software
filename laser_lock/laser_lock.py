@@ -2,6 +2,9 @@ from moglabs_fzw import Wavemeter
 from DLC_Pro_Controller import Laser
 from simple_pid import PID
 
+import time
+import matplotlib.pyplot as plt
+
 class Laser_lock:
     #possible DLC controllers: Barium, Photoionization, Lutetium_848nm_1244nm, Lutetium_646nm
 
@@ -30,21 +33,29 @@ class Laser_lock:
         raise Exception("Laser not connected to the Wavemeter")
     
     # will lock the lasers to a certain wavelength
-    def set_wavelength(self, setpoint_, Kp=0.5, Ki=0.05, Kd=0, max_voltage=100, min_voltage=0, max_voltage_change=20):
-        pass
+    def set_wavelength(self, setpoint_, Kp=1, Ki=0.05, Kd=0, max_voltage=100, min_voltage=0, max_voltage_change=1):
+        
         '''Untested, do not run'''
         
         pid = PID(Kp, Ki, Kd, setpoint=setpoint_)
-
         change = 0
-        while True:    #find a proper way to run and end the loop
-            
+
+        x='4'
+        st = time.time()
+
+        t_time=[]
+        wavelength=[]
+        
+        while (x != 'end'):    #find a proper way to run and end the loop
+            t_time.append(st-time.time())
+
+
             #finds the change from the PID
             change = pid(self.get_wavelength() + change)
 
             #makes sure the change in voltage is not beyond the given interval
             if (max_voltage_change > (change/2) > 0):
-                change = 20 #20/2 = 10
+                change = 1 #20/2 = 10
 
 
             #calculates what the new voltage offset will be
@@ -56,8 +67,14 @@ class Laser_lock:
 
 
             #alters the voltage according to the change from the pid
-            self.set_voltage_offset(change)  #perhaps I should alter the change such as devide it in half?
-
+            #self.set_voltage_offset(change)  #perhaps I should alter the change such as devide it in half?
+            print('recommended voltage: ', change/2)
+            x=input()
+        plt.plot(t_time, wavelength)
+        plt.xlabel('time (s)')
+        plt.ylabel('wavelength')
+        plt.title('PID indirectly influencing wavelength with excess noise')
+        plt.show()
 
 
 
