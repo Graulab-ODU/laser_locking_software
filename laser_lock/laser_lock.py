@@ -54,21 +54,22 @@ class Laser_lock:
             change = pid(self.get_wavelength(self._wavemeter_channel))
 
             #makes sure the change in voltage is not beyond the given interval
-            if (max_voltage_change > (change/2) > 0):
+            if (max_voltage_change > (change) > 0):
                 change = 1 #20/2 = 10
 
 
             #calculates what the new voltage offset will be
-            change = self.get_voltage_offset()+(change/2)
+            new_voltage = self.get_voltage_offset()+(change)
 
             #sets up limitations for the PID to make sure it doesnt go beyond or break certain things
-            if (max_voltage > (change/2) > min_voltage):
-                change = 70
-
+            if (max_voltage < new_voltage):
+                new_voltage = max_voltage
+            elif (new_voltage > min_voltage):
+                new_voltage = 70
 
             #alters the voltage according to the change from the pid
             #self.set_voltage_offset(change)  #perhaps I should alter the change such as devide it in half?
-            print('recommended voltage: ', change/2)
+            print('recommended voltage: ', new_voltage)
             x=input()
         plt.plot(t_time, wavelength)
         plt.xlabel('time (s)')
