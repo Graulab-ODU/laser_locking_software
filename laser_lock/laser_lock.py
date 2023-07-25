@@ -51,11 +51,13 @@ class Laser_lock:
 
 
             #finds the change from the PID
-            change = pid(self.get_wavelength(self._wavemeter_channel))
+            change = pid(self.get_wavelength(self._wavemeter_channel))*-1   #'''the -1 is because of how decreasing voltage increases the wavelength'''
 
-            #makes sure the change in voltage is not beyond the given interval
-            if (max_voltage_change < change < (max_voltage_change*-1)):
-                change = 1 
+            #makes sure the change in voltage is not beyond the given max change
+            if (max_voltage_change < change):
+                change = max_voltage_change
+            elif (change < (max_voltage_change*-1)):
+                change = max_voltage_change*-1 
 
 
             #calculates what the new voltage offset will be
