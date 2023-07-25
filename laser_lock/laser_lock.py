@@ -54,7 +54,7 @@ class Laser_lock:
             change = pid(self.get_wavelength(self._wavemeter_channel))
 
             #makes sure the change in voltage is not beyond the given interval
-            if (max_voltage_change < change):
+            if (max_voltage_change < change < (max_voltage_change*-1)):
                 change = 1 
 
 
@@ -65,7 +65,7 @@ class Laser_lock:
             if (max_voltage < new_voltage):
                 #recommended voltage is beyond max
                 new_voltage = max_voltage
-            elif (new_voltage > min_voltage):
+            elif (new_voltage < min_voltage):
                 new_voltage = min_voltage
 
             #alters the voltage according to the change from the pid
