@@ -54,26 +54,17 @@ class Laser_lock:
             change = pid(self.get_wavelength(self._wavemeter_channel))*-1   #'''the -1 is because of how decreasing voltage increases the wavelength'''
 
             #makes sure the change in voltage is not beyond the given max change
-            if (max_voltage_change < change):
-                change = max_voltage_change
-            elif (change < (max_voltage_change*-1)):
-                change = max_voltage_change*-1 
+            change = self._interval_clamp(change, max_voltage_change*-1, max_voltage_change)
 
 
-            #calculates what the new voltage offset will be
-            new_voltage = self.get_voltage_offset()+(change)
-
-            #sets up limitations for the PID to make sure it doesnt go beyond or break certain things
-            if (max_voltage < new_voltage):
-                #recommended voltage is beyond max
-                new_voltage = max_voltage
-            elif (new_voltage < min_voltage):
-                new_voltage = min_voltage
+            #calculates what the new voltage offset will be and keeps it in a specific interval
+            new_voltage = self._interval_clamp(self.get_voltage_offset()+(change), min_voltage, max_voltage)
 
             #alters the voltage according to the change from the pid
             #self.set_voltage_offset(change)  #perhaps I should alter the change such as devide it in half?
             print('recommended voltage: ', new_voltage)
             x=input()
+            
         plt.plot(t_time, wavelength)
         plt.xlabel('time (s)')
         plt.ylabel('wavelength')
@@ -99,3 +90,7 @@ class Laser_lock:
     #returns wavemeter port
     def get_wavemeter_port(self):
         return self._wavemeter_channel
+    
+    #will return the value if it is in the given interval, or the value closest to it in the interval
+    def _interval_clamp(self, x, minval, maxval):
+        return min(max(x, minval), maxval)
