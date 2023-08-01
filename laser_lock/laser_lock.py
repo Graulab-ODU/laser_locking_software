@@ -46,8 +46,12 @@ class Laser_lock:
         
         while (x != 'end'):    #find a proper way to run and end the loop
 
-            #protects the program from crashing if the laser enters multi-mode
-            wavelength = self.get_wavelength()
+            #protects the program from crashing if the laser enters multi-mode/connection time outs
+            try:
+                wavelength = self.get_wavelength()
+            except:
+                wavelength = 'Low contrast'
+            
             if (type(wavelength) != float):
                 wavelength = previous_wavelength
 
@@ -67,7 +71,8 @@ class Laser_lock:
             x=input()
 
             #updates previous_wavelength
-            previous_wavelength = wavelength
+            if (type(wavelength) != float):
+                previous_wavelength = wavelength
             
         
 
