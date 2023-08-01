@@ -75,9 +75,9 @@ class Laser_lock:
 
 
 
-    # gets laser wavelength
-    def get_wavelength(self, channel):
-        return self._wavemeter[channel].wavelength
+    # returns laser's wavelength in nm(vac)
+    def get_wavelength(self):
+        return self._wavemeter[self._wavemeter_channel].wavelength
     
     # gets the laser voltage offset
     def get_voltage_offset(self):
