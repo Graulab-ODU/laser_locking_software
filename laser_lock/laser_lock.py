@@ -41,10 +41,10 @@ class Laser_lock:
         pid = PID(Kp, Ki, Kd, setpoint=setpoint_)
         change = 0
 
-        x='4'
+        
         previous_wavelength = self.get_wavelength()
         
-        while (x != 'end'):    #find a proper way to run and end the loop
+        for i in range(300):    #find a proper way to run and end the loop
 
             #protects the program from crashing if the laser enters multi-mode/connection time outs
             try:
@@ -66,15 +66,15 @@ class Laser_lock:
             new_voltage = self._interval_clamp(self.get_voltage_offset()+(change), min_voltage, max_voltage)
 
             #alters the voltage according to the change from the pid
-            #self.set_voltage_offset(change)  #perhaps I should alter the change such as devide it in half?
             print('recommended voltage: ', new_voltage)
-            x=input()
+            
+            self.set_voltage_offset(new_voltage)
 
             #updates previous_wavelength
             if (type(wavelength) != float):
                 previous_wavelength = wavelength
             
-        
+            time.sleep(1)
 
 
 
