@@ -3,7 +3,6 @@ from DLC_Pro_Controller import Laser
 from simple_pid import PID
 
 import time
-import matplotlib.pyplot as plt
 
 class Laser_lock:
     #possible DLC controllers: Barium, Photoionization, Lutetium_848nm_1244nm, Lutetium_646nm
@@ -35,7 +34,9 @@ class Laser_lock:
     # will lock the lasers to a certain wavelength
     def set_wavelength(self, setpoint_, Kp=1, Ki=0.05, Kd=0, max_voltage=100, min_voltage=0, max_voltage_change=1):
         
-        '''Untested, do not run'''
+        #because of how decreasing voltage increases the wavelength, Kp and Ki must be negative
+        Kp = min(Kp, Kp*-1)
+        Ki = min(Ki, Ki*-1)
         
         pid = PID(Kp, Ki, Kd, setpoint=setpoint_)
         change = 0
@@ -51,7 +52,7 @@ class Laser_lock:
 
 
             #finds the change from the PID
-            change = pid(self.get_wavelength(self._wavemeter_channel))*-1   #'''the -1 is because of how decreasing voltage increases the wavelength'''
+            change = pid(self.get_wavelength(self._wavemeter_channel))   
 
             #makes sure the change in voltage is not beyond the given max change
             change = self._interval_clamp(change, max_voltage_change*-1, max_voltage_change)
@@ -65,11 +66,7 @@ class Laser_lock:
             print('recommended voltage: ', new_voltage)
             x=input()
             
-        plt.plot(t_time, wavelength)
-        plt.xlabel('time (s)')
-        plt.ylabel('wavelength')
-        plt.title('PID indirectly influencing wavelength with excess noise')
-        plt.show()
+        
 
 
 
