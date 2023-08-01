@@ -42,12 +42,12 @@ class Laser_lock:
         change = 0
 
         x='4'
-        previous_wavelength = self.get_wavelength(self._wavemeter_channel)
+        previous_wavelength = self.get_wavelength()
         
         while (x != 'end'):    #find a proper way to run and end the loop
 
             #protects the program from crashing if the laser enters multi-mode
-            wavelength = self.get_wavelength(self._wavemeter_channel)
+            wavelength = self.get_wavelength()
             if (type(wavelength) != float):
                 wavelength = previous_wavelength
 
