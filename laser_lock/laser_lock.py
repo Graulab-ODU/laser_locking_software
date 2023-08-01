@@ -49,7 +49,7 @@ class Laser_lock:
             #protects the program from crashing if the laser enters multi-mode
             wavelength = self.get_wavelength(self._wavemeter_channel)
             if (type(wavelength) != float):
-                wavelenght = previous_wavelength
+                wavelength = previous_wavelength
 
             #Runs the PID
             change = pid(wavelength)   
@@ -67,7 +67,7 @@ class Laser_lock:
             x=input()
 
             #updates previous_wavelength
-            previous_wavelength = wavelenght
+            previous_wavelength = wavelength
             
         
 
