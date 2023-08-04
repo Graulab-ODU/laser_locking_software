@@ -44,16 +44,18 @@ class Laser_lock:
         
         previous_wavelength = self.get_wavelength()
         
-        for i in range(300):    #find a proper way to run and end the loop
+        for i in range(9000):    #find a proper way to run and end the loop
 
             #protects the program from crashing if the laser enters multi-mode/connection time outs
             try:
                 wavelength = self.get_wavelength()
             except:
                 wavelength = 'Low contrast'
-            
             if (type(wavelength) != float):
                 wavelength = previous_wavelength
+
+            #adds deadzone to the wavelength value
+            wavelength = float(int(wavelength*100000))/100000
 
             #Runs the PID
             change = pid(wavelength)   
