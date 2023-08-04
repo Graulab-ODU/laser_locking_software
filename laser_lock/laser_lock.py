@@ -1,7 +1,6 @@
 from moglabs_fzw import Wavemeter
 from DLC_Pro_Controller import Laser
 from simple_pid import PID
-
 import time
 
 class Laser_lock:
@@ -32,7 +31,7 @@ class Laser_lock:
         raise Exception("Laser not connected to the Wavemeter")
     
     # will lock the lasers to a certain wavelength
-    def set_wavelength(self, setpoint_, Kp=1, Ki=0.05, Kd=0, max_voltage=100, min_voltage=0, max_voltage_change=1):
+    def set_wavelength(self, setpoint_, Kp=626, Ki=613.6363, Kd=0, time_running=0, interval_delay=0.2, max_voltage=130, min_voltage=30, max_voltage_change=5):
         
         #because of how decreasing voltage increases the wavelength, Kp and Ki must be negative
         Kp = min(Kp, Kp*-1)
@@ -44,13 +43,15 @@ class Laser_lock:
         
         previous_wavelength = self.get_wavelength()
         
-        for i in range(9000):    #find a proper way to run and end the loop
+        for i in range(9000):    
+
+            st=time.time()
 
             #protects the program from crashing if the laser enters multi-mode/connection time outs
             try:
                 wavelength = self.get_wavelength()
             except:
-                wavelength = 'Low contrast'
+                wavelength = previous_wavelength
             if (type(wavelength) != float):
                 wavelength = previous_wavelength
 
@@ -68,15 +69,15 @@ class Laser_lock:
             new_voltage = self._interval_clamp(self.get_voltage_offset()+(change), min_voltage, max_voltage)
 
             #alters the voltage according to the change from the pid
-            print('recommended voltage: ', new_voltage)
-            
             self.set_voltage_offset(new_voltage)
 
             #updates previous_wavelength
-            if (type(wavelength) != float):
+            if (type(wavelength) == float):
                 previous_wavelength = wavelength
             
-            time.sleep(1)
+            #ensure the program pauses is equal to the given interval_delay or how long the program takes to run
+            et = time.time()
+            time.sleep((interval_delay-(et-st)) if (interval_delay-(et-st)) > 0 else 0)
 
 
 
