@@ -6,8 +6,8 @@ import time
 class Laser_lock:
     #possible DLC controllers: Barium, Photoionization, Lutetium_848nm_1244nm, Lutetium_646nm
 
-    # laser wavelength in nm        493          650                646                     646                     848
-    _wavemeter_port_reference=[['Barium', 1], ['Barium', 2], ['Lutetium_646nm', 2], ['Lutetium_646nm', 1], ['Lutetium_848nm_1244nm', 2]]# ports 6, 7, 8 are not set up as of yet
+    # laser wavelength in nm        493          650                646                     646                     848                  1052           413
+    _wavemeter_port_reference=[['Barium', 1], ['Barium', 2], ['Lutetium_646nm', 2], ['Lutetium_646nm', 1], ['Lutetium_848nm_1244nm', 2], [0], ['Photoionization', 2]]# ports 6, 7, 8 are not set up as of yet
     _wavemeter_channel = 1
 
     _wavemeter = None
@@ -32,18 +32,24 @@ class Laser_lock:
     
     # will lock the lasers to a certain wavelength
     def set_wavelength(self, setpoint_, Kp=626, Ki=613.6363, Kd=0, time_running=0, interval_delay=0.2, max_voltage=130, min_voltage=30, max_voltage_change=5):
+        '''
+            setpoint: target value
+            Kp, Ki, Kd: PID constants
+            time_running: number of minutes that the loop will run
         
+        '''
         #because of how decreasing voltage increases the wavelength, Kp and Ki must be negative
         Kp = min(Kp, Kp*-1)
         Ki = min(Ki, Ki*-1)
         
         pid = PID(Kp, Ki, Kd, setpoint=setpoint_)
         change = 0
-
+        index = 0
         
         previous_wavelength = self.get_wavelength()
         
-        for i in range(9000):    
+        #if 0 will run untill interrupted, else it will run 
+        while (True if time_running == 0 else (time_running *(1/interval_delay)*60) > index):  
 
             st=time.time()
 
@@ -78,6 +84,8 @@ class Laser_lock:
             #ensure the program pauses is equal to the given interval_delay or how long the program takes to run
             et = time.time()
             time.sleep((interval_delay-(et-st)) if (interval_delay-(et-st)) > 0 else 0)
+
+            #
 
 
 
